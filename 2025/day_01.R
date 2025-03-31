@@ -110,7 +110,7 @@
     labs(
       title = "France's Energy Mix Evolution (1960-2020)",
       subtitle = subtitle_text,
-      caption = "Each square represents 1% of total energy consumption for each decade from 1960 to 2020. These are proportions of total terawatt hours (TWh) consumed.<br>Data: Our World in Data | Heavily inspired by Muhammad Azhar's waffle plot on R Graph Gallery"
+      caption = "Each square represents 1% of total energy consumption for each decade from 1960 to 2020. These are proportions of total terawatt hours (TWh) consumed.<br>Data: Our World in Data | Heavily inspired by Muhammad Azhar's waffle plot on R Graph Gallery | Plot: @gnoblet"
     ) +
     scale_x_discrete() + 
     scale_y_continuous(
