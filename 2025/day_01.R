@@ -193,6 +193,7 @@ ggsave(
   "2025/day_01.png",
   height = 6,
   width = 9,
-  dpi = 600
+  dpi = 600,
+  type = "cairo-png"
 )
   
