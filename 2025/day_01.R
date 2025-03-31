@@ -77,7 +77,7 @@ subtitle_text <- glue::glue(
     <span style='color:{energy_colors['Biofuel']};'><strong>biofuel</strong></span>, 
     <span style='color:{energy_colors['Solar']};'><strong>solar</strong></span>, 
     <span style='color:{energy_colors['Wind']};'><strong>wind</strong></span>, and 
-    <span style='color:{energy_colors['Other Renewables']};'><strong>other renewable energy</strong></span>."
+    <span style='color:{energy_colors['Other Renewables']};'><strong>other renewable energy</strong></span>. While proportions help illustrate the balance between different energy sources, they can be misleading, as they hide the significant overall increase in the consumption of all energy sources."
 )
 # use forcats to add levels and order by energy_sources
 dat_sum <- dat_sum[,
@@ -179,8 +179,8 @@ g <- g + inset_element(
     geom_richtext(
       aes(
         x = 0.30,
-        y = 0.60,
-        label = "<span style='font-family:Carlito; font-size:15px;'>By 1973, nuclear power was 8% of<br>the production of French electricity.</span>"
+        y = 0.52,
+        label = "<span style='font-family:Carlito; font-size:15px;'>In 1973, nuclear power was 8% of<br>the production of French electricity.</span>"
       ),
       fill = NA,
       label.color = NA,
