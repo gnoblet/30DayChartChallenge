@@ -1,306 +1,188 @@
-  options(box.path = here::here())
-  box::use(
-    rio[import],
-    pl = paletteer,
-    data.table[...],
-    forcats[fct_recode],
-    ggplot2[...],
-    waffle[geom_waffle],
-    ggtext[element_textbox_simple],
-    gridtext[richtext_grob],
-    cowplot[ggdraw, draw_grob],
-    showtext[showtext_auto],
-    sysfonts[font_add_google],
-    owidapi[owid_get],
-    patchwork[...],
-    gghighlight[gghighlight],
-    scico
-  )
+library(rio)
+library(data.table)
+library(ggplot2)
+library(showtext)
+library(sysfonts)
+library(patchwork)
+library(ggtext)
+library(owidapi)
+library(scico)
+library(refugees)
+library(paletteer)
 
+# Add Nunito font
+font_add_google(name = "Nunito", family = "Nunito")
 
-  # get idps data
-  dat <- refugees::idmc
-  iso <- refugees::countries
-  setDT(dat)
+# Load and preprocess data
+dat <- refugees::idmc
+iso <- refugees::countries
+setDT(dat)
+dat <- dat[year == 2024]
+dat <- merge(dat, iso, by.x = "coa_iso", by.y = "iso_code")
 
-  # keep only 2024
-  dat <- dat[year == 2024]
+# Merge population data
+pop <- owid_get("population")
+setDT(pop)
+pop <- pop[year == 2023 & entity_id != ""]
+dat <- merge(dat, pop, by.x = "coa_iso", by.y = "entity_id")
 
-  # left merge countries coa_iso == iso_code
-  dat <- merge(dat, iso, by.x = "coa_iso", by.y = "iso_code")
+# Calculate IDP proportion per population
+dat[, prop := total / population_historical]
 
-  # get population data
-  pop <- owid_get("population")
-  setDT(pop)
-  # pop data from 2023
-  pop <- pop[year == 2023 & entity_id != ""]
+# State of Palestine to Palestinee
+# Syrian Arab Rep. to Syria
+# Dem. Rep. of the Congo to Congo Kinshasa
+dat[name == "State of Palestine", name := "Palestine"]
+dat[name == "Syrian Arab Rep.", name := "Syria"]
+dat[name == "Dem. Rep. of the Congo", name := 'Congo Kinshasa']
 
-  # merge with dat on coa_iso = entity_id
-  dat <- merge(dat, pop, by.x = "coa_iso", by.y = "entity_id")
+# Function to prepare top data and calculate angles
+prepare_top_data <- function(data, column, top_n = 30) {
+  setorderv(data, column, order = -1)
+  top_data <- data[1:top_n]
+  top_data[, id := 1:.N]
+  top_data[, coa_iso := factor(coa_iso, levels = coa_iso)]
+  
+  angle <- 90 - 360 * (top_data$id - 0.5) / nrow(top_data)
+  top_data[, hjust := ifelse(angle < -90, 1, 0)]
+  top_data[, angle := ifelse(angle < -90, angle + 180, angle)]
+  
+  return(top_data)
+}
 
-  # calculate proportion of idp per pop
-  dat[, prop := total / population_historical * 100]
+top10_total <- prepare_top_data(dat, "total")
+top10_prop <- prepare_top_data(dat, "prop")
 
-  # State of Palestine to Palestinee
-  # Syrian Arab Rep. to Syria
-  dat[name == "State of Palestine", name := "Palestine"]
-  dat[name == "Syrian Arab Rep.", name := "Syria"]
-  dat[name == "Dem. Rep. of the Congo", name := 'Congo Kinshasa']
-
-
-  # Order FIRST before creating position indexes
-  setorderv(dat, "total", order = -1)
-  top10_total <- dat[1:30]
-
-  # Now create position indexes AFTER sorting
-  top10_total[, id := 1:.N]  # Reset name based on sorted order
-  top10_total[, coa_iso := factor(coa_iso, levels = coa_iso)]  # Preserve order in factor
-
-  # Calculate angles based on NEW order
-  angle <- 90 - 360 * (top10_total$id - 0.5)/nrow(top10_total)
-  top10_total$hjust <- ifelse(angle < -90, 1, 0)
-  top10_total$angle <- ifelse(angle < -90, angle + 180, angle)
-
-
-  # do the same for proportions
-  setorderv(dat, "prop", order = -1)
-  top10_prop <- dat[1:30]
-  top10_prop[, id := 1:.N]  # Reset name based on sorted order
-  top10_prop[, coa_iso := factor(coa_iso, levels = coa_iso)]  # Preserve order in factor
-  angle <- 90 - 360 * (top10_prop$id - 0.5)/nrow(top10_prop)
-  top10_prop$hjust <- ifelse(angle < -90, 1, 0)
-  top10_prop$angle <- ifelse(angle < -90, angle + 180, angle)
-
-
-  # circular bar plot for total
-  p1 <- ggplot(top10_total, aes(x = id, y = total, fill = total)) +
-    # Main bars
+# Function to create circular bar plots
+create_circular_plot <- function(data, y_column, fill_label, lab_f) {
+  ggplot(data, aes(x = id, y = get(y_column), fill = get(y_column))) +
     geom_col(alpha = 0.8, width = 1) +
-    gghighlight(
-      id <= 12, 
-      unhighlighted_params = list(fill = "lightgray", alpha = 1)
-    ) +
-    # Central white circle
-    # annotate(
-    #   "rect",
-    #   xmin = -Inf, xmax = Inf,
-    #   ymin = -Inf, ymax = max(top10_total$total) * 0.02,
-    #   fill = "white"
-    # ) +
     coord_polar() +
-    ylim(0, max(top10_total$total) * 1.05) + # Add extra space (5%) above the tallest bar
-    # Labels
+    scale_y_continuous(
+      limits = c(0, max(data[[y_column]]) * 1.2),
+      expand = expansion(mult = c(0.2, 0))
+    ) +
     geom_text(
+      data = data[1:12],
       aes(
-        y = total + (max(total) * 0.05),
+        y = get(y_column) + (max(get(y_column)) * 0.05),
         label = name,
         hjust = hjust
       ),
       color = "black",
       size = 4,
-      angle = top10_total$angle[1:12],
+      angle = data$angle[1:12],
       family = 'Nunito'
     ) +
-    theme_minimal(
-      base_family = 'Nunito'
-    ) +
-    labs(x = NULL, y = NULL, fill = "Number of IDPs") +
+    theme_minimal(base_family = 'Nunito') +
+    labs(x = NULL, y = NULL, fill = fill_label) +
     theme(
       axis.text = element_blank(),
       panel.grid = element_blank(),
       plot.background = element_rect(fill = "white", color = NA),
       legend.position = c(0.5, 0.1),
-      legend.title = element_text(size = 12, margin = margin(b = 5)),  # Added bottom margin
+      legend.title = element_text(size = 12),
       legend.text = element_text(size = 10),
-      legend.margin = margin(t = 15, b = 0),  # Tightened top/bottom legend margins
-      legend.box.spacing = unit(0, "pt"),  # Eliminated box spacing
-      plot.margin = margin(t = 10, b = 0)  # Reduced overall plot margins
+      plot.margin = margin(t = 10, b = 0)
     ) +
-    pl$scale_fill_paletteer_c("scico::acton",
-        direction = -1,
-        na.value = "lightgray",
-        labels = scales::label_number(scale_cut = scales::cut_short_scale()),
-        guide = guide_colorbar(
-          direction = "horizontal", # Horizontal layout
-          title.position = "top",
-          title.hjust = 0.5,
-          label.position = "bottom",
-          label.hjust = 0.5,
-          nrow = 1,
-          keywidth = unit(150, "pt"),  # Balanced key size
+    scale_fill_paletteer_c(
+      "scico::acton",
+       direction = -1, 
+       na.value = "lightgray",
+       labels = lab_f,
+       guide = guide_colorbar(
+         direction = "horizontal", # Horizontal layout
+         title.position = "top",
+         title.hjust = 0.5,
+         label.position = "bottom",
+         label.hjust = 0.5,
+         nrow = 1,
+         keywidth = unit(150, "pt"),  # Balanced key size
+   ))
+}
+
+
+
+p1 <- create_circular_plot(top10_total, "total", "Number of IDPs", lab_f = scales::label_number(scale_cut = scales::cut_short_scale()))
+p2 <- create_circular_plot(top10_prop, "prop", "Proportion of IDPs", lab_f = scales::label_percent(accuracy = 1))
+  
+# Create final layout
+final_layout <- (p1 + p2) +
+  plot_layout(widths = c(1, 1)) +
+  plot_annotation(
+    title = "<b style='font-size:30px; color:#260C3F;'>The Global Displacement Crisis (2024)</b><br>
+              <span style='font-size:22px; color:#585380;'>Visualizing Internally Displaced Persons (IDPs) by Numbers and Proportions</span><br><br>
+              <span style='font-size:16px; color:#404040;'>
+              This visualization highlights the global crisis of internally displaced persons (IDPs) in 2024. The left chart focuses on absolute numbers, showcasing the magnitude of displacement in countries like Sudan and the Democratic Republic of Congo. The right chart emphasizes the proportion of IDPs relative to population size, revealing the severe societal impact in nations such as Palestine and Syria, where 1 in 3 people is displaced. This dual perspective underscores the need for several metrics to effectively starts understanding any given humanitarian crisis.'</span><br>
+              <span style='font-size:14px; color:#9E9E9E;'>Data: IDMC displacement data extracted from UNHCR's 'refugees' package & Our World In Data | Plot: @gnoblet</span>",
+    theme = theme(
+      plot.title = element_textbox_simple(
+        family = "Nunito", 
+        size = 18, 
+        hjust = 0.5,
+        halign = 0.5,
+        # no margin below, even negative
+        margin = margin(
+          l = 30,
+          r = 30,
+          b = 0,
+          t = 10)
       )
     )
-    # scale_fill_viridis_b(
-    #   option = "magma",
-    #   direction = -1,
-    #   breaks = scales::breaks_extended(n = 6),
-    #   na.value = "lightgray",  
-    #   labels = scales::label_number(
-    #     scale_cut = scales::cut_short_scale(),
-    #     accuracy = 0.1
-    #   ),
-    #   guide = guide_legend(
-    #     direction = "horizontal",
-    #     title.position = "top",
-    #     title.hjust = 0.5,
-    #     label.position = "bottom",
-    #     label.hjust = 0.5,
-    #     keywidth = unit(25, "pt"),  # Balanced key size
-    #     keyheight = unit(15, "pt"),
-    #     nrow = 1,
-    #     override.aes = list(alpha = 0.8)  # Match bar transparency
-    #   )
-    #)
-
-  # same for prop
-  p2 <- ggplot(top10_prop, aes(x = id, y = prop, fill = prop)) +
-    # White central base
-    # geom_col(
-    #   aes(y = max(prop) * 0.2),
-    #   fill = "white",
-    #   width = 1,
-    #   show.legend = FALSE
-    # ) +
-    # Main bars
-    geom_col(alpha = 0.8, width = 1) +
-    gghighlight(
-      id <= 12, 
-      unhighlighted_params = list(fill = "lightgray", alpha = 1)
-    ) +
-    # Central white circle
-    # annotate(
-    #   "rect",
-    #   xmin = -Inf, xmax = Inf,
-    #   ymin = -Inf, ymax = max(top10_prop$prop) * 0.2,
-    #   fill = "white"
-    # ) +
-    coord_polar() +
-    ylim(0, max(top10_prop$prop) * 1.05) + # Add extra space (20%) above the tallest bar
-    # Labels
-    geom_text(
-      aes(
-        y = prop + (max(prop) * 0.05),
-        label = name,
-        hjust = hjust
-      ),
-      color = "black",
-      #fontface = "bold",
-      size = 4,
-      angle = top10_prop$angle[1:12],
-      family = 'Nunito'
-    ) +
-    theme_minimal(
-      base_family = 'Nunito'
-    ) +
-    labs(x = NULL, y = NULL, fill = "Proportion of IDPs") +
-    theme(
-      axis.text = element_blank(),
-      panel.grid = element_blank(),
-      plot.background = element_rect(fill = "white", color = NA),
-      legend.position = c(0.5, 0.1),
-      legend.title = element_text(size = 12, margin = margin(b = 5)),  # Added bottom margin
-      legend.text = element_text(size = 10),
-      legend.margin = margin(t = 15, b = 0),  # Tightened top/bottom legend margins
-      legend.box.spacing = unit(0, "pt"),  # Eliminated box spacing
-      plot.margin = margin(t = 10, b = 0)  # Reduced overall plot margins
-    ) +
-    pl$scale_fill_paletteer_c("scico::acton",
-      direction = -1,
-      na.value = "lightgray",
-      labels = scales::label_number(scale_cut = scales::cut_short_scale()),
-      guide = guide_colorbar(
-        direction = "horizontal", # Horizontal layout
-        title.position = "top",
-        title.hjust = 0.5,
-        label.position = "bottom",
-        label.hjust = 0.5,
-        nrow = 1,
-        keywidth = unit(150, "pt"),  # Balanced key size
   )
-  )
-  
 
-  # use patchwork to add both graphs together
-  # Combine plots
-  # Create a text placeholder plot (adjust height ratio as needed)
-  # title_plot <- ggplot() + 
-  #   annotate(
-  #     "text", 
-  #     x = 0.5, 
-  #     y = 0.5, 
-  #     label = "Top 30 Countries by IDP Statistics (2024)\nLeft: Absolute Numbers | Right: Proportion of Population",
-  #     size = 5, 
-  #     family = "Nunito",
-  #     fontface = "bold"
-  #   ) +
-  #   theme_void() +
-  #   theme(plot.margin = margin(b = 5))  # Reduce bottom margin
-
-
-
-  # Create final layout
-  # Combine everything with title on top
-  final_layout <- (p1 + p2) +
-    plot_layout(widths = c(1, 1)) +
-    inset_element(
+create_annotation <- function(curve_x, curve_xend, curve_y, curve_yend,
+    text_x, text_y, label, text_width = 30) {
       ggplot() +
         geom_curve(
-          aes(x = 0.68, xend = 0.75, y = 0.8, yend = 0.85),  # Horizontal center alignment
-          curvature = -0.3,  # Negative for downward curve
-          angle = 120,
-          arrow = arrow(length = unit(0.02, "npc")),
-          linewidth = 0.5
+        aes(x = curve_x, xend = curve_xend, 
+        y = curve_y, yend = curve_yend),
+        curvature = -0.3,
+        angle = 120,
+        arrow = arrow(length = unit(0.01, "npc")),
+        linewidth = 0.5
         ) +
         annotate(
-          "text",
-          x = 0.50,
-          y = 0.76,
-          label = paste(strwrap("In Palestine and in Syria, 1 person out of 3 is internally displaced.", width = 36), collapse = "\n"), # Wrap text
-          size = 3.5,
-          hjust = 0,
-          family = "Nunito"
+        "text",
+        x = text_x,
+        y = text_y,
+        label = paste(strwrap(label, width = text_width), collapse = "\n"),
+        size = 3.5,
+        hjust = 0,
+        family = "Nunito"
         ) +
         theme_void() +
-        coord_cartesian(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE),
-      left = 0,
-      right = 1,
-      bottom = 0,
-      top = 1
-    ) +
-    plot_annotation(
-      title = "<b style='font-size:24px; color:#2a475e;'>Internal Displacement Crisis (2024)</b><br>
-               <span style='font-size:16px; color:#6b6b6b;'>Absolute Numbers vs. Population Proportions</span><br><br>
-               <span style='font-size:14px; color:#404040;'>Comparative metrics reveal different dimensions of displacement: 
-               Absolute numbers (left) show crisis magnitude, while proportions 
-               (right) reveal population impact. Syria and Palestine demonstrate 
-               how high proportions (1 in 3 displaced) indicate systemic collapse, 
-               despite smaller absolute numbers compared to larger nations. As Desrosières (1993) noted: 'Statistical constructs shape our 
-               understanding of social realities - their power lies in making 
-               visible what they measure, while hiding what they exclude.'</span><br>
-               <span style='font-size:12px; color:#404040;'>Data: UNHCR package showing IDMC displacement data & Our World In Data | Plot: @gnoblet</span>",
-      theme = theme(
-        plot.title = element_textbox_simple(
-          family = "Nunito", 
-          size = 18, 
-          hjust = 0.5,
-          halign = 0.5,
-          # no margin below, even negative
-          margin = margin(
-            l = 20,
-            r = 20,
-            b = 20,
-            t = 10)
-        )
-      )
-    )
+        coord_cartesian(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE)
+}
 
-  # Display the plot
-  final_layout
+# Create final plot with annotations
+p <- wrap_elements(final_layout) +
+  inset_element(
+    create_annotation(
+      curve_x = 0.67, curve_xend = 0.74,
+      curve_y = 0.51, curve_yend = 0.55,
+      text_x = 0.50, text_y = 0.48,
+      label = "In Palestine and in Syria, 1 person out of 3 is internally displaced.",
+      text_width = 36
+    ),
+    left = 0, right = 1, bottom = 0, top = 1, align_to = 'full'
+  ) +
+  inset_element(
+    create_annotation(
+      curve_x = 0.18, curve_xend = 0.25,
+      curve_y = 0.51, curve_yend = 0.55,
+      text_x = 0.03, text_y = 0.46,
+      label = "In Sudan, there are more than 9 million persons displaced, not counting refugees that crossed borders.",
+      text_width = 30
+    ),
+    left = 0, right = 1, bottom = 0, top = 1, align_to = 'full'
+  )
 
 # save fig
 ggsave(
   "2025/day_03.png",
   height = 9,
   width = 10,
-  dpi = 600
+  dpi = 600,
+  type = "cairo-png"
 )
