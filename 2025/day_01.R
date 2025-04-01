@@ -18,11 +18,11 @@ round_to_decade <- function(year) {
 
 # sum consumption for france by source, every 10 years from 1900 to 2020
 dat_sum <- dat[year >= 190 & year <= 2020 & country == "France", 
-lapply(.SD, function(x) sum(x, na.rm = TRUE)), 
-.SDcols = c("biofuel_consumption", "coal_consumption", "gas_consumption", 
-            "hydro_consumption", "nuclear_consumption", "oil_consumption", 
-            "other_renewable_consumption", "solar_consumption", "wind_consumption"),
-by = .(country, decade = round_to_decade(year))]
+  lapply(.SD, function(x) sum(x, na.rm = TRUE)), 
+  .SDcols = c("biofuel_consumption", "coal_consumption", "gas_consumption", 
+              "hydro_consumption", "nuclear_consumption", "oil_consumption", 
+              "other_renewable_consumption", "solar_consumption", "wind_consumption"),
+  by = .(country, decade = round_to_decade(year))]
 
 # pivot longer
 dat_sum <- melt(dat_sum, id.vars = c("country", "decade"))
@@ -89,7 +89,6 @@ dat_sum <- dat_sum[,
 setorder(dat_sum, decade, variable)
 
 
-energy_palette <- paletteer::paletteer_d("ggsci::category20_d3")
 # plot
 body_font <- "Carlito"
 title_font<- "Carlito"
@@ -118,7 +117,6 @@ g <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
         name = "Energy Source",
         drop = FALSE
       ) +
-  #coord_equal() + 
   theme(
     # Grid
     panel.grid = element_blank(),
@@ -127,7 +125,6 @@ g <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
     axis.text.x = element_text(family = body_font, size = 12),
     # Strip
     strip.text = element_text(family = body_font, size = 11),
-    #axis.text.y = element_blank(),
     # Legend
     legend.position = "none",
     # Title
@@ -163,8 +160,6 @@ g <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
     plot.margin = margin(20, 20, 20, 20)
   ) +
   # Add arrow
-  # Text added through a grob on figure since facets prevent from annotating without
-  # duplicating text or cropping
   geom_curve(
     data = data.frame(x = 3.9, y = 21, xend = 4.9, yend = 24, decade = "1970"),
     aes(x = x, y = y, xend = xend, yend = yend),
