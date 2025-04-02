@@ -49,7 +49,6 @@ dat_sum_year_long[, pop_type := factor(pop_type, levels = names(cat), labels = c
               use_direct_label = TRUE,
               unhighlighted_params = list(color = "gray60", size = 0.2)) +
   theme_dark(base_size = 14) +
-  #scale_color_paletteer_d("ggsci::category20") +
   scale_color_manual(values = c(
     "Refugees" = "#00B4D8", 
     "IDPs" = "#FF3D7F"
