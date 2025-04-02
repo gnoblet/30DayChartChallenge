@@ -78,7 +78,7 @@ subtitle_text <- glue::glue(
     <span style='color:{energy_colors['Wind']};'><strong>wind</strong></span>, and 
     <span style='color:{energy_colors['Other Renewables']};'><strong>other renewable energy</strong></span>."
 )
-# use forcats to add levels and order by energy_sources
+# add levels and order by energy_sources
 dat_sum <- dat_sum[,
   variable := factor(
     fct_recode(variable, !!!energy_sources),
