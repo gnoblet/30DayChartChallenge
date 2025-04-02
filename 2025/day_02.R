@@ -1,4 +1,3 @@
-options(box.path = here::here())
 library(rio)
 library(data.table)
 library(ggplot2)
@@ -42,34 +41,13 @@ cat <- c(
 
 dat_sum_year_long[, pop_type := factor(pop_type, levels = names(cat), labels = cat)]
 
-# add a geom line for all pop
-g <- ggplot(dat_sum_year_long[pop_type != "Total"], aes(x = year, y = n, group = pop_type, color = pop_type, fill = pop_type)) +
-  geom_line() +
-  gghighlight(pop_type %in% c("Refugees", "IDPs"), use_direct_label = T) +
-  theme_minimal() +
-  labs(
-    title = "Sloppy on Displacement Data",
-    x = NULL,
-    y = NULL
-  ) +
-  scale_y_continuous(
-    labels = scales::label_number(big.mark = ",", scale_cut = scales::cut_short_scale()),
-  ) +
-  theme(
-    legend.position = "none"
-  )
-
- g
-
-
+# plot
  g <- ggplot(dat_sum_year_long[pop_type != "Total"], 
        aes(x = year, y = n, group = pop_type, color = pop_type)) +
   geom_line(size = 1) +
   gghighlight(pop_type %in% c("Refugees", "IDPs"), 
               use_direct_label = TRUE,
               unhighlighted_params = list(color = "gray60", size = 0.2)) +
-  
-  # Dark theme and vibrant colors
   theme_dark(base_size = 14) +
   #scale_color_paletteer_d("ggsci::category20") +
   scale_color_manual(values = c(
