@@ -32,8 +32,7 @@ dat_sum[, perc := (value / sum(value)) * 100, by = .(country, decade)]
 # remove NA
 dat_sum <- na.omit(dat_sum, cols = "perc")
 
-# Adjust to ensure sum=100 for each decade
-# Replace problematic adjustment block with:
+# ensure sum=100 for each decade
 dat_sum[, perc_int := as.integer(round(perc))][,
   perc_int := {
     current_sum <- sum(perc_int)
