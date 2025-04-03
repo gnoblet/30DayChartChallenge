@@ -113,7 +113,7 @@ final_layout <- (p1 + p2) +
     title = "<b style='font-size:30px; color:#260C3F;'>The Global Displacement Crisis (2024)</b><br>
               <span style='font-size:22px; color:#585380;'>Two Metrics to Visualize Internally Displaced Persons (IDPs) </span><br><br>
               <span style='font-size:16px; color:#404040;'>
-              The left chart focuses on absolute numbers, showcasing the magnitude of displacement in countries like Sudan and the Democratic Republic of Congo. The right chart emphasizes the proportion of IDPs relative to population size, revealing the severe societal impact in nations such as Palestine and Syria, where 1 in 3 people is displaced. <br> </span><br>
+              The left chart focuses on absolute numbers, showcasing the magnitude of displacement in countries like Sudan and the Democratic Republic of Congo. The right chart emphasizes the proportion of IDPs relative to population size, revealing the severity of impact in nations such as Palestine and Syria, where 1 in 3 people is displaced. <br> </span><br>
               <span style='font-size:14px; color:#9E9E9E;'>Data: IDMC displacement data extracted from UNHCR's 'refugees' package & Our World In Data | Plot: @gnoblet</span>",
     theme = theme(
       plot.title = element_textbox_simple(
