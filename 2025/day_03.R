@@ -160,8 +160,8 @@ p <- wrap_elements(final_layout) +
   inset_element(
     create_annotation(
       curve_x = 0.67, curve_xend = 0.74,
-      curve_y = 0.52, curve_yend = 0.56,
-      text_x = 0.50, text_y = 0.48,
+      curve_y = 0.53, curve_yend = 0.57,
+      text_x = 0.49, text_y = 0.50,
       label = "In Palestine and in Syria, 1 person out of 3 is internally displaced.",
       text_width = 36
     ),
