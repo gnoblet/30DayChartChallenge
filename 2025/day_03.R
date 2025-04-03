@@ -111,9 +111,9 @@ final_layout <- (p1 + p2) +
   plot_layout(widths = c(1, 1)) +
   plot_annotation(
     title = "<b style='font-size:30px; color:#260C3F;'>The Global Displacement Crisis (2024)</b><br>
-              <span style='font-size:22px; color:#585380;'>Visualizing Internally Displaced Persons (IDPs) by Numbers and Proportions</span><br><br>
+              <span style='font-size:22px; color:#585380;'>Two Metrics to Visualize Internally Displaced Persons (IDPs) </span><br><br>
               <span style='font-size:16px; color:#404040;'>
-              This visualization highlights the global crisis of internally displaced persons (IDPs) in 2024. The left chart focuses on absolute numbers, showcasing the magnitude of displacement in countries like Sudan and the Democratic Republic of Congo. The right chart emphasizes the proportion of IDPs relative to population size, revealing the severe societal impact in nations such as Palestine and Syria, where 1 in 3 people is displaced. This dual perspective underscores the need for several metrics to effectively starts understanding any given humanitarian crisis.'</span><br>
+              The left chart focuses on absolute numbers, showcasing the magnitude of displacement in countries like Sudan and the Democratic Republic of Congo. The right chart emphasizes the proportion of IDPs relative to population size, revealing the severe societal impact in nations such as Palestine and Syria, where 1 in 3 people is displaced. <br> </span><br>
               <span style='font-size:14px; color:#9E9E9E;'>Data: IDMC displacement data extracted from UNHCR's 'refugees' package & Our World In Data | Plot: @gnoblet</span>",
     theme = theme(
       plot.title = element_textbox_simple(
@@ -160,7 +160,7 @@ p <- wrap_elements(final_layout) +
   inset_element(
     create_annotation(
       curve_x = 0.67, curve_xend = 0.74,
-      curve_y = 0.51, curve_yend = 0.55,
+      curve_y = 0.52, curve_yend = 0.56,
       text_x = 0.50, text_y = 0.48,
       label = "In Palestine and in Syria, 1 person out of 3 is internally displaced.",
       text_width = 36
@@ -170,7 +170,7 @@ p <- wrap_elements(final_layout) +
   inset_element(
     create_annotation(
       curve_x = 0.18, curve_xend = 0.25,
-      curve_y = 0.51, curve_yend = 0.55,
+      curve_y = 0.52, curve_yend = 0.56,
       text_x = 0.03, text_y = 0.46,
       label = "In Sudan, there are more than 9 million persons displaced, not counting refugees that crossed borders.",
       text_width = 30
