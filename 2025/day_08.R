@@ -8,7 +8,6 @@ downloads <- cran_downloads(package_name, from = "2021-01-01", to = Sys.Date())
 Q1 <- quantile(downloads$count, 0.25)
 Q3 <- quantile(downloads$count, 0.75)
 IQR <- Q3 - Q1
-# Determine outlier thresholds
 lower_bound <- Q1 - 1.5 * IQR
 upper_bound <- Q3 + 1.5 * IQR
 downloads <- downloads |> 
