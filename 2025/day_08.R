@@ -3,21 +3,16 @@ library(dplyr)
 library(extrafont)
 library(cranlogs)
 
-# Set the package name
 package_name <- "HistData"
-
-# Retrieve the download data for the past year
 downloads <- cran_downloads(package_name, from = "2021-01-01", to = Sys.Date())
 Q1 <- quantile(downloads$count, 0.25)
 Q3 <- quantile(downloads$count, 0.75)
 IQR <- Q3 - Q1
-# Determine outlier thresholds
 lower_bound <- Q1 - 1.5 * IQR
 upper_bound <- Q3 + 1.5 * IQR
 downloads <- downloads |> 
   dplyr::filter(count >= lower_bound & count <= upper_bound)
 
-# Create a ggplot2 histogram
 ggplot(downloads, aes(count)) +
   geom_histogram(aes(y = after_stat(density)),binwidth = 10, color = "#F5F5DC", fill = "#D4AF37") +
   geom_density(color = "#8B4513") +
