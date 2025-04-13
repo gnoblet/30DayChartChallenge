@@ -3,6 +3,8 @@ library(ggplot2)
 library(data.table)
 library(geofacet)
 library(showtext)
+library(sysfonts)
+library(ggtext)
 
 
 # Retrieve life satisfaction distribution data from OWID
@@ -30,6 +32,8 @@ dat_cty[, avg_score := mean(cantril_ladder_score, na.rm = TRUE), by = year]
 #------ Colors and fonts
 font_add_google("Nunito", "Nunito")
 showtext_auto()
+showtext_opts(dpi = 600)
+
 
 body_font <- "Nunito"
 title_font <- "Nunito"
@@ -48,7 +52,7 @@ tag <- "
 
   <span style='font-size:12pt;color:#2A2A2A;'>This visualization focuses on African countries from 2011 to 2020. The <span style='color:#00CFC8;'>**aquamarine areas**</span> show yearly country averages, while the <span style='color:#112D4E;'>**midnight line**</span> represents the average score across all African countries This average provides a benchmark for comparison.</span>
 
-  <span style='font-size:12pt;color:#2A2A2A;'> Note data is missing for given years, for instance in Djibouti (DJ) or South Sudan (SSD), or entirely for certain countries like Eritrea (ER) or Capo Verde (CV)<br>.
+  <span style='font-size:12pt;color:#2A2A2A;'> Note data is missing for given years, for instance in Djibouti (DJ) or South Sudan (SSD), or entirely for certain countries like Eritrea (ER) or Capo Verde (CV).<br>
 
   <span style='font-size:9pt;color:#6D6D6D;'>Data: Our World in Data on Self-Reported Life Satisfaction | Viz: @gnoblet</span>
 "
@@ -87,6 +91,6 @@ g
 ggsave(
   "2025/day_09.png",
   dpi = 600,
-  width = 11,
-  height = 11,
+  width = 13,
+  height = 11
 )
