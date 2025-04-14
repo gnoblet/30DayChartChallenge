@@ -94,13 +94,13 @@ ggplot(dat_sum, aes(x = year, y = 1, fill = tonnes)) +
         )
     ) +
     labs(
-        title = "<span style='color:#333333; font-size:22pt; font-weight:700'>Global Yearly Production of Rice, Wheat and Maize</span><br><br><span style='color:#333333; font-size:22pt'>From 1950 to 2020 in Billion of Tonnes",
+        title = "<span style='color:#333333; font-size:19pt; font-weight:700'>Global Yearly Production of Rice, Wheat, and Maize</span><br><br><span style='color:#333333; font-size:19pt'>From 1950 to 2020 in Billion of Tonnes",
         caption = "Data: Our World in Data | Viz: @gnoblet"
     ) +
     theme_minimal() +
     theme(
         axis.text.x = element_text(
-            size = 14,
+            size = 13,
             color = "gray20"
         ),
         axis.text.y = element_blank(),
@@ -110,12 +110,12 @@ ggplot(dat_sum, aes(x = year, y = 1, fill = tonnes)) +
         legend.position = 'top',
         legend.title = element_blank(),
         legend.text = element_text(
-            size = 14,
+            size = 13,
             color = "gray20"
         ),
         legend.key.width = unit(5, "lines"),
         plot.title = element_textbox_simple(
-            size = 14,
+            size = 13,
             hjust = 0.5,
             halign = 0.5,
             width = 0.8,
@@ -125,11 +125,11 @@ ggplot(dat_sum, aes(x = year, y = 1, fill = tonnes)) +
             hjust = 0,
             size = 12,
             color = "gray20",
-            margin = margin(t = 60)
+            margin = margin(t = 30)
         ),
         strip.text = element_text(
             hjust = 0.1,
-            size = 16,
+            size = 15,
             color = "gray20",
             margin = margin(r = 15)
         ),
@@ -146,8 +146,9 @@ ggplot(dat_sum, aes(x = year, y = 1, fill = tonnes)) +
 
 
 ggsave(
-    "2025/day_10.png",
+    "2025/day_11.png",
     dpi = 600,
-    width = 8,
+    width = 9,
     height = 10,
+    units = "in"
 )
