@@ -49,11 +49,10 @@ dat_sum <- dat_sum[
 maxmin <- range(dat_sum$tonnes, na.rm = T)
 m <- mean(dat_sum$tonnes, na.rm = T)
 
-# plot geom_til y = 1
+# plot geom_tile
 ggplot(dat_sum, aes(x = year, y = 1, fill = tonnes)) +
     geom_tile() +
     facet_wrap(~production, nrow = 31) +
-    # log color scale
     scale_fill_gradientn(
         colors = rev(RColorBrewer::brewer.pal(11, "RdBu")),
         values = scales::rescale(c(maxmin[1], md, maxmin[2]))
