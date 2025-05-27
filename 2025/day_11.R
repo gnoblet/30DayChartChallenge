@@ -28,6 +28,57 @@ for (id in ids) {
 }
 dat <- rbindlist(l_dat, idcol = "production")
 
+# remove non country
+entity_to_rm <- c(
+    'World',
+    'Americas (FAO)',
+    'High-income countries',
+    'North America',
+    'Upper-middle-income countries',
+    'Asia',
+    'Eastern Asia (FAO)',
+    'China (FAO)',
+    'Europe (FAO)',
+    'South America (FAO)',
+    'South America',
+    'Lower-middle-income countries',
+    'European Union (27) (FAO)',
+    'European Union (27)',
+    'Africa (FAO)',
+    'Africa',
+    'Eastern Europe (FAO)',
+    'Net Food Importing Developing Countries (FAO)',
+    'Low Income Food Deficit Countries (FAO)',
+    'Least Developed Countries (FAO)',
+    'Southern Europe (FAO)',
+    'Net Food Importing Developing Countries (FAO)',
+    'Low Income Food Deficit Countries (FAO)',
+    'Least Developed Countries (FAO)',
+    'Southern Europe (FAO)',
+    'South-eastern Asia (FAO)',
+    'Central America (FAO)',
+    'Southern Asia (FAO)',
+    'Land Locked Developing Countries (FAO)',
+    'Eastern Africa (FAO)',
+    'Western Europe (FAO)',
+    'Low-income countries',
+    'Southern Africa (FAO)',
+    'Western Africa (FAO)',
+    'Western Asia (FAO)',
+    'Middle Africa (FAO)',
+    'Northern Africa (FAO)',
+    'Small Island Developing States (FAO)',
+    'Caribbean (FAO)',
+    'Oceania (FAO)',
+    'Central Asia (FAO)',
+    'Northern Europe (FAO)',
+    'Belgium-Luxembourg (FAO)',
+    'Asia (FAO)',
+    'Northern America (FAO)',
+    'Europe',
+    'Micronesia (FAO)'
+)
+dat <- dat[!entity_name %in% entity_to_rm]
 
 # sum group by entity_name and year
 dat_sum <- dat[,

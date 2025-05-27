@@ -1,0 +1,120 @@
+---
+title: "About"
+format:
+  html:
+    toc: false
+---
+
+```{=html}
+<style>
+.about-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.about-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.about-section:last-child {
+  border-bottom: none;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 2rem;
+  margin-top: 1rem;
+}
+
+.tools-column h3 {
+  color: #3a506b;
+  border-bottom: 2px solid #5bc0be;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.footer-content {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+</style>
+```
+
+<div class="about-container">
+  <div class="about-section">
+    <h2>About the 30 Day Chart Challenge</h2>
+    <p>The #30DayChartChallenge is a community-driven data visualization challenge that runs every April. Participants create one chart per day based on a set of prompts organized into different categories.</p>
+  </div>
+
+  <div class="about-section">
+    <h2>The Challenge</h2>
+    <p>Each day has a specific prompt that guides the creation of a visualization. The prompts are organized into categories such as "comparisons," "distributions," "relationships," and more. This structure encourages participants to explore different types of data visualization and improve their skills across various domains.</p>
+  </div>
+
+  <div class="about-section">
+    <h2>My Approach</h2>
+    <p>For this challenge, I primarily used:</p>
+    <ul>
+      <li><strong>R</strong> with packages like ggplot2, patchwork, and sf for most visualizations</li>
+      <li><strong>Python</strong> with libraries like matplotlib, seaborn, and plotly for specific days</li>
+      <li>Various data sources including open data repositories, APIs, and self-collected data</li>
+    </ul>
+  </div>
+
+  <div class="about-section">
+    <h2>Tools Used</h2>
+    <div class="tools-grid">
+      <div class="tools-column">
+        <h3>R Packages</h3>
+        <ul>
+          <li>ggplot2</li>
+          <li>data.table</li>
+          <li>sf</li>
+          <li>patchwork</li>
+          <li>ggtext</li>
+          <li>waffle</li>
+          <li>forcats</li>
+          <li>and many more!</li>
+        </ul>
+      </div>
+      <div class="tools-column">
+        <h3>Python Libraries</h3>
+        <ul>
+          <li>matplotlib</li>
+          <li>seaborn</li>
+          <li>pandas</li>
+          <li>numpy</li>
+          <li>plotly</li>
+          <li>hdx (Humanitarian Data Exchange)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section">
+    <h2>Conversion to Quarto Website</h2>
+    <p>This website was created by converting individual R scripts to Quarto documents. Quarto provides an excellent way to combine code, visualizations, and narrative in a cohesive document. The website makes all visualizations and code accessible in one place.</p>
+  </div>
+
+  <div class="about-section">
+    <h2>Acknowledgements</h2>
+    <ul>
+      <li>The #30DayChartChallenge community for inspiration and feedback</li>
+      <li>Various data providers and sources used throughout the challenge</li>
+      <li>Open source maintainers of the visualization libraries and tools</li>
+    </ul>
+  </div>
+
+  <div class="footer-content">
+    <p>Made with Quarto and GitHub Copilot</p>
+    <p>on a <a href="https://frame.work/" target="_blank">Framework Laptop 13</a> running <a href="https://fedoraproject.org/kde/" target="_blank">Fedora KDE 42</a> and <a href="https://zed.dev/" target="_blank">Zed</a></p>
+  </div>
+</div>
