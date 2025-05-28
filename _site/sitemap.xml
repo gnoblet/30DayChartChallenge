@@ -1,35 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yourname.github.io/30DayChartChallenge/index.html</loc>
-    <lastmod>2025-05-27T14:57:53.476Z</lastmod>
-  </url>
-  <url>
     <loc>https://yourname.github.io/30DayChartChallenge/chart_template.html</loc>
     <lastmod>2025-05-27T14:38:32.403Z</lastmod>
   </url>
   <url>
-    <loc>https://yourname.github.io/30DayChartChallenge/gallery.html</loc>
-    <lastmod>2025-05-27T14:55:56.397Z</lastmod>
+    <loc>https://yourname.github.io/30DayChartChallenge/about.html</loc>
+    <lastmod>2025-05-28T06:51:03.566Z</lastmod>
   </url>
   <url>
-    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_01.html</loc>
-    <lastmod>2025-05-27T14:40:34.708Z</lastmod>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_21.html</loc>
+    <lastmod>2025-05-27T12:33:44.864Z</lastmod>
   </url>
   <url>
-    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_07.html</loc>
-    <lastmod>2025-05-27T11:22:31.116Z</lastmod>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_16.html</loc>
+    <lastmod>2025-05-27T10:38:20.997Z</lastmod>
   </url>
   <url>
     <loc>https://yourname.github.io/30DayChartChallenge/2025/day_08.html</loc>
     <lastmod>2025-05-27T13:20:28.454Z</lastmod>
   </url>
   <url>
-    <loc>https://yourname.github.io/30DayChartChallenge/about.html</loc>
-    <lastmod>2025-05-27T14:58:16.338Z</lastmod>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_03.html</loc>
+    <lastmod>2025-05-27T11:20:58.075Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_01.html</loc>
+    <lastmod>2025-05-27T14:40:34.708Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_19.html</loc>
+    <lastmod>2025-05-27T10:25:30.050Z</lastmod>
   </url>
   <url>
     <loc>https://yourname.github.io/30DayChartChallenge/2025/day_02.html</loc>
     <lastmod>2025-05-27T11:20:42.803Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_07.html</loc>
+    <lastmod>2025-05-27T11:22:31.116Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_09.html</loc>
+    <lastmod>2025-05-27T12:34:09.287Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/2025/day_17.html</loc>
+    <lastmod>2025-05-27T10:38:20.997Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/index.html</loc>
+    <lastmod>2025-05-27T14:57:53.476Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yourname.github.io/30DayChartChallenge/gallery.html</loc>
+    <lastmod>2025-05-27T14:55:56.397Z</lastmod>
   </url>
 </urlset>
