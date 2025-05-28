@@ -203,7 +203,7 @@ Now, we eventually would like to save this plot.s
 
 ```{python}
 # save plot
-plt.savefig('2025/day_19.png', dpi = 600)
+plt.savefig('day_19.png', dpi = 600)
 
 # close plot
 plt.close()

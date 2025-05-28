@@ -1,0 +1,51 @@
+---
+title: "Day XX - Title"
+author: "Your Name"
+date: "2025-04-XX"
+format:
+  html:
+    code-fold: true
+    toc: true
+    fig-width: 10
+    fig-height: 7
+---
+
+# Day XX: Title
+
+## Overview
+
+Brief description of the chart and the data used.
+
+## Code
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load libraries
+library(ggplot2)
+# Add your other libraries here
+
+# Data preparation
+# Add your data preparation code here
+
+# Create visualization
+# Add your plotting code here
+
+# Save the plot
+ggsave(
+  "day_xx.png",
+  height = 7,
+  width = 10,
+  dpi = 300
+)
+```
+
+## Final Plot
+
+![Day XX plot](day_xx.png)
+
+## Notes
+
+Additional information about the visualization, data sources, and any challenges or insights.

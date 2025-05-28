@@ -1,0 +1,564 @@
+---
+title: "day_21 - 30DayChartChallenge"
+format:
+  html:
+    code-fold: true
+    toc: true
+---
+
+# day 21
+
+This document contains the R code for creating the plot for this day's challenge.
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(rio)
+library(data.table)
+library(ggplot2)
+library(forcats)
+library(waffle)
+library(ggtext)
+library(showtext)
+library(patchwork)
+library(ggsankey)
+library(dplyr) # somehow ggsankey needs dplyr and does not import it
+
+# get data
+dat <- import(
+  "https://nyc3.digitaloceanspaces.com/owid-public/data/energy/owid-energy-data.csv"
+)
+setDT(dat)
+
+# round down to the nearest decade
+round_to_decade <- function(year) {
+  return(year - year %% 10)
+}
+
+# energy sources and colors
+energy_sources <- c(
+  "Coal" = "coal_consumption",
+  "Oil" = "oil_consumption",
+  "Gas" = "gas_consumption",
+  "Hydro" = "hydro_consumption",
+  "Nuclear" = "nuclear_consumption",
+  "Biofuel" = "biofuel_consumption",
+  "Solar" = "solar_consumption",
+  "Wind" = "wind_consumption",
+  "Other Renewables" = "other_renewable_consumption"
+)
+energy_colors = c(
+  "Coal" = "#444239FF", # very dark coal grey
+  "Oil" = "#035F72FF",
+  "Gas" = "#D77186FF",
+  "Hydro" = "#A4B7E1FF",
+  "Nuclear" = "#E69F00",
+  "Biofuel" = "#B0986CFF",
+  "Solar" = "#F8D564FF",
+  "Wind" = "#56B4E9",
+  "Other Renewables" = "#1BB6AFFF"
+)
+
+
+#------ Fonts
+font_add_google("Roboto Condensed", "Roboto Condensed")
+showtext_auto()
+showtext_opts(dpi = 600)
+body_font <- "Roboto Condensed"
+title_font <- "Roboto Condensed"
+
+#------ WAFFLE PLOT (original)
+
+# sum consumption for France by source, every 10 years from 1960 to 2020
+dat_sum <- dat[
+  year >= 1960 & year <= 2020 & country == "France",
+  lapply(.SD, function(x) sum(x, na.rm = TRUE)),
+  .SDcols = c(
+    "biofuel_consumption",
+    "coal_consumption",
+    "gas_consumption",
+    "hydro_consumption",
+    "nuclear_consumption",
+    "oil_consumption",
+    "other_renewable_consumption",
+    "solar_consumption",
+    "wind_consumption"
+  ),
+  by = .(country, decade = round_to_decade(year))
+]
+
+# pivot longer
+dat_sum <- melt(dat_sum, id.vars = c("country", "decade"))
+
+# Ccnsumption per year as perc of total
+dat_sum[, perc := (value / sum(value)) * 100, by = .(country, decade)]
+# Rrmove NA
+dat_sum <- na.omit(dat_sum, cols = "perc")
+
+# ensure sum=100 for each decade
+dat_sum[, perc_int := as.integer(round(perc))][,
+  perc_int := {
+    current_sum <- sum(perc_int)
+    if (current_sum != 100) {
+      diff <- 100 - current_sum
+      perc_int[which.max(value)] <- perc_int[which.max(value)] + diff
+    }
+    perc_int
+  },
+  by = decade
+][
+  perc_int > 0
+]
+
+# add levels and order by energy_sources
+dat_sum <- dat_sum[,
+  variable := factor(
+    fct_recode(variable, !!!energy_sources),
+    levels = names(energy_sources)
+  )
+]
+setorder(dat_sum, decade, variable)
+
+
+# Create waffle plot
+waffle_plot <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
+  geom_waffle(
+    color = "white",
+    size = 0.2,
+    n_rows = 5,
+    flip = TRUE,
+    make_proportional = FALSE
+  ) +
+  facet_wrap(~decade, nrow = 1, strip.position = "bottom") +
+  theme_minimal() +
+  labs(
+    title = "A Proportional Picture: France's Energy Mix by Decade ...",
+    y = "Percentage (%)"
+  ) +
+  scale_x_discrete() +
+  scale_y_continuous(
+    labels = function(x) x * 5,
+    expand = c(0, 0)
+  ) +
+  scale_fill_manual(
+    values = energy_colors,
+    breaks = names(energy_sources),
+    name = "Energy Source",
+    drop = FALSE
+  ) +
+  theme(
+    text = element_text(family = body_font),
+    panel.grid = element_blank(),
+    axis.title = element_blank(),
+    axis.text.x = element_text(family = body_font, size = 10),
+    strip.text = element_text(family = body_font, size = 10),
+    legend.position = "none",
+    plot.title = element_textbox_simple(
+      hjust = 0.5,
+      size = 12,
+      family = title_font,
+      margin = margin(b = 30)
+    ),
+    plot.background = element_rect(color = "white", fill = "white"),
+    plot.margin = unit(c(30, 30, 30, 30), "pt")
+  )
+
+
+#------ YEARLY FOSSIL ENERGY PLOTS
+
+# prep yearly data for all sources
+yearly_all <- dat[
+  year >= 1960 & year <= 2020 & country == "France",
+  lapply(.SD, function(x) sum(x, na.rm = TRUE)),
+  .SDcols = energy_sources,
+  by = .(year)
+]
+
+# melt to long format
+yearly_long <- melt(
+  yearly_all,
+  id.vars = "year",
+  measure.vars = energy_sources,
+  variable.name = "energy_type",
+  value.name = "consumption"
+)
+yearly_long[,
+  energy_type := factor(
+    energy_type,
+    levels = energy_sources,
+    labels = names(energy_sources)
+  )
+]
+
+# assign color: fossil in color, others grey
+fossil_types <- c("Coal", "Oil", "Gas", "Nuclear")
+
+# factor for energy_type with non-fossils first, fossils last
+yearly_long$energy_type <- factor(
+  yearly_long$energy_type,
+  levels = c(
+    setdiff(levels(yearly_long$energy_type), fossil_types),
+    fossil_types
+  )
+)
+
+# reorder the data so non-fossils come first, fossils last
+yearly_long <- yearly_long[order(yearly_long$energy_type), ]
+
+color_map <- setNames(
+  ifelse(
+    names(energy_sources) %in% fossil_types,
+    energy_colors[names(energy_sources)],
+    "grey80"
+  ),
+  names(energy_sources)
+)
+
+# calculate percentage of each source in total per year
+yearly_long[, perc := 100 * consumption / sum(consumption), by = year]
+
+# area chart (actually a sankey): absolute consumption by type (fossil in color, rest grey)
+area_plot <- ggplot(
+  yearly_long[year %in% c(1960, 1970, 1980, 1990, 2000, 2010, 2020)],
+  aes(
+    x = year,
+    node = energy_type,
+    fill = energy_type,
+    value = consumption
+  )
+) +
+  geom_sankey_bump(
+    space = 0,
+    type = "alluvial",
+    color = "transparent",
+    smooth = 6,
+    alpha = 0.8
+  ) +
+  scale_fill_manual(values = color_map) +
+  scale_x_continuous(breaks = scales::pretty_breaks(), expand = c(0, 0)) +
+  scale_y_continuous(labels = scales::comma, expand = c(0, 0)) +
+  labs(
+    title = "... Eventually, Proportions Hinder Gross Total Consumption Increase (or Not-So-Much Decrease)",
+    x = NULL,
+    y = "Consumption (TWh)"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = body_font),
+    axis.text = element_text(size = 10),
+    panel.grid.minor = element_blank(),
+    plot.title = element_textbox_simple(
+      hjust = 0.5,
+      size = 12,
+      family = title_font,
+      margin = margin(b = 20)
+    ),
+    legend.position = "none",
+    plot.margin = unit(c(30, 30, 30, 30), "pt")
+  )
+
+# line chart: share of each energy source in total (fossil + nuclear in color, rest grey)
+line_plot <- ggplot(yearly_long, aes(x = year, y = perc, color = energy_type)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = color_map) +
+  scale_x_continuous(breaks = scales::pretty_breaks(), expand = c(0, 0)) +
+  labs(
+    title = "... Visualizing The Proportional Shift  Differently: The Decline of Coal and Oil, the Rise of Gas, and the Rapid Expansion of Nuclear ...",
+    x = NULL,
+    y = "Percentage (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(family = body_font),
+    axis.text = element_text(size = 10),
+    panel.grid.minor = element_blank(),
+    plot.title = element_textbox_simple(
+      hjust = 0.5,
+      size = 12,
+      family = title_font,
+      margin = margin(b = 20)
+    ),
+    legend.position = "none",
+    plot.margin = unit(c(30, 30, 30, 30), "pt")
+  )
+
+
+#------ Title and text
+
+# old subtitle
+subtitle_text <- glue::glue(
+  "In the 1960s, only <span style='color:{energy_colors['Coal']};'><strong>coal</strong></span>, 
+    <span style='color:{energy_colors['Oil']};'><strong>oil</strong></span>, 
+    <span style='color:{energy_colors['Gas']};'><strong>gas</strong></span>, and 
+    <span style='color:{energy_colors['Hydro']};'><strong>hydro</strong></span> were part of the French primary energy consumption mix. By the 2020s, <span style='color:{energy_colors['Nuclear']};'><strong>nuclear</strong></span> energy became a player for almost 40%, and other sources appeared such as 
+    <span style='color:{energy_colors['Biofuel']};'><strong>biofuel</strong></span>, 
+    <span style='color:{energy_colors['Solar']};'><strong>solar</strong></span>, 
+    <span style='color:{energy_colors['Wind']};'><strong>wind</strong></span>, and 
+    <span style='color:{energy_colors['Other Renewables']};'><strong>other renewable energy</strong></span>. The French model for energy is singular. In 1973, nuclear power already accounted for 8% of the production of French electricity."
+)
+
+# caption
+caption_text <- glue::glue(
+  "
+  <span style='font-size:11pt; color:#777777'>
+  Each square on the right chart represents 1% of total energy consumption for each decade from 1960 to 2020. These are proportions of total terawatt hours (TWh) consumed. Data: Our World in Data | Viz: @gnoblet
+  </span>"
+)
+
+# rectangles param
+ymin_1stline <- 0.20
+ymax_1stline <- 0.24
+ymin_2ndline <- 0.08
+ymax_2ndline <- 0.13
+text_y_1stline <- 0.18
+text_y_2ndline <- 0.07
+text_size <- 3.5
+
+# overall title and text panel
+text_panel <- ggplot() +
+  geom_textbox(
+    aes(
+      x = 0,
+      y = 1,
+      halign = 0,
+      valign = 1,
+      label = glue::glue(
+        "<span style='font-size:22pt; font-weight:bold'>60 Years of France's Primary Energy Consumption </span>
+        <br><br>
+        <span style='font-size:14pt'>
+        Primary energy consumption measures the total energy used within a country, based on energy sources at the point of extraction or generation, and covers direct uses like electricity, heating, and transport. It does <b>not</b> include the energy embedded in imported goods and services.
+        <br><br>
+        {subtitle_text}
+        <br><br>
+        {caption_text}
+        <br><br>
+        <span style='font-size:12pt;font-weight:bold'>Primary energy sources:</span>"
+      ),
+      box.color = NA
+    ),
+    box.padding = unit(c(0, 0, 0, 0), "pt"),
+    box.margin = grid::unit(c(0, 0, 0, 0), "pt"),
+    box.r = unit(0, "pt"),
+    fill = NA,
+    hjust = 0,
+    vjust = 1,
+    lineheight = 1.1,
+    width = unit(0.95, "npc"),
+    family = body_font
+  ) +
+  # Add rectangle legends - Row 1
+  annotate(
+    "rect",
+    xmin = 0.1,
+    xmax = 0.17,
+    ymin = ymin_1stline,
+    ymax = ymax_1stline,
+    fill = energy_colors["Coal"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.25,
+    xmax = 0.32,
+    ymin = ymin_1stline,
+    ymax = ymax_1stline,
+    fill = energy_colors["Oil"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.4,
+    xmax = 0.47,
+    ymin = ymin_1stline,
+    ymax = ymax_1stline,
+    fill = energy_colors["Gas"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.55,
+    xmax = 0.62,
+    ymin = ymin_1stline,
+    ymax = ymax_1stline,
+    fill = energy_colors["Hydro"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.7,
+    xmax = 0.77,
+    ymin = ymin_1stline,
+    ymax = ymax_1stline,
+    fill = energy_colors["Nuclear"]
+  ) +
+  # Row 2
+  annotate(
+    "rect",
+    xmin = 0.1,
+    xmax = 0.17,
+    ymin = ymin_2ndline,
+    ymax = ymax_2ndline,
+    fill = energy_colors["Biofuel"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.25,
+    xmax = 0.32,
+    ymin = ymin_2ndline,
+    ymax = ymax_2ndline,
+    fill = energy_colors["Solar"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.4,
+    xmax = 0.47,
+    ymin = ymin_2ndline,
+    ymax = ymax_2ndline,
+    fill = energy_colors["Wind"]
+  ) +
+  annotate(
+    "rect",
+    xmin = 0.55,
+    xmax = 0.62,
+    ymin = ymin_2ndline,
+    ymax = ymax_2ndline,
+    fill = energy_colors["Other Renewables"]
+  ) +
+  # Labels - Row 1
+  annotate(
+    "text",
+    x = 0.135,
+    y = text_y_1stline,
+    label = "Coal",
+    color = energy_colors["Coal"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.285,
+    y = text_y_1stline,
+    label = "Oil",
+    color = energy_colors["Oil"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.435,
+    y = text_y_1stline,
+    label = "Gas",
+    color = energy_colors["Gas"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.585,
+    y = text_y_1stline,
+    label = "Hydro",
+    color = energy_colors["Hydro"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.735,
+    y = text_y_1stline,
+    label = "Nuclear",
+    color = energy_colors["Nuclear"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  # Labels - Row 2
+  annotate(
+    "text",
+    x = 0.135,
+    y = text_y_2ndline,
+    label = "Biofuel",
+    color = energy_colors["Biofuel"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.285,
+    y = text_y_2ndline,
+    label = "Solar",
+    color = energy_colors["Solar"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.435,
+    y = text_y_2ndline,
+    label = "Wind",
+    color = energy_colors["Wind"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  annotate(
+    "text",
+    x = 0.585,
+    y = text_y_2ndline,
+    label = "Other\nRenewables",
+    color = energy_colors["Other Renewables"],
+    size = text_size,
+    fontface = "bold",
+    family = body_font,
+    vjust = 1
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", color = NA),
+    plot.margin = unit(c(0, 0, 0, 0), "pt"),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE)
+
+
+#------ Combine all plots with patchwork
+
+# 2x2 layout
+combined_plot <- (text_panel + waffle_plot) /
+  (line_plot + area_plot)
+plot_annotation(
+  theme = theme(
+    plot.background = element_rect(fill = "white", color = NA)
+  )
+)
+
+# display
+#combined_plot
+
+# save
+ggsave(
+  "day_21.png",
+  combined_plot,
+  height = 12,
+  width = 16,
+  dpi = 600
+)
+```
+
+## Final Plot
+
+![day_21 plot](day_21.png)
+
