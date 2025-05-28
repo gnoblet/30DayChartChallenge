@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - "*.qmd"
+    - "!2025/day_04.qmd"
 
 website:
   title: "30DayChartChallenge"
@@ -12,10 +15,13 @@ website:
         href: about.qmd
     background: "#f8f9fa"
     foreground: "#212529"
-  site-url: "https://yourname.github.io/30DayChartChallenge"
-  repo-url: "https://github.com/yourname/30DayChartChallenge"
+  site-url: "https://gnoblet.github.io/30DayChartChallenge"
+  repo-url: "https://github.com/gnoblet/30DayChartChallenge"
+  repo-actions: [edit, issue]
   favicon: "images/favicon.png"
   page-navigation: true
+  page-footer:
+    center: "Made with [Quarto](https://quarto.org/) and published with [GitHub Pages](https://pages.github.com/)"
 
 format:
   html:
