@@ -1,5 +1,7 @@
 # 30DayChartChallenge
 
+[![Quarto Publish](https://github.com/gnoblet/30DayChartChallenge/actions/workflows/quarto-publish.yml/badge.svg)](https://github.com/gnoblet/30DayChartChallenge/actions/workflows/quarto-publish.yml)
+
 ## About
 This repository contains my submissions for the #30DayChartChallenge, a community-driven data visualization challenge that runs every April. Participants create one chart per day based on a set of prompts organized into different categories.
 

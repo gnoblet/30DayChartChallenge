@@ -3,13 +3,12 @@ project:
   output-dir: _site
   render:
     - "*.qmd"
-    - "!2025/day_04.qmd"
 
 website:
-  title: "30DayChartChallenge"
+  title: "30 Day Chart Challenge"
   navbar:
     left:
-      - text: "Gallery ✴ 2025"
+      - text: "Gallery 2025"
         href: index.qmd
       - text: "About"
         href: about.qmd
@@ -20,8 +19,6 @@ website:
   repo-actions: [edit, issue]
   favicon: "images/favicon.png"
   page-navigation: true
-  page-footer:
-    center: "Made with [Quarto](https://quarto.org/) and published with [GitHub Pages](https://pages.github.com/)"
 
 format:
   html:

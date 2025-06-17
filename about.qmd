@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "What about it?"
 format:
   html:
     toc: false
@@ -44,7 +44,7 @@ For this challenge, I primarily used:
 - ggtext
 - waffle
 - forcats
-- and many more!
+- and more!
 :::
 
 ::: {.tools-column}
@@ -61,19 +61,11 @@ For this challenge, I primarily used:
 
 :::
 
-::: {.about-section}
-## Conversion to Quarto Website
-
-This website was created by converting individual R scripts to Quarto documents. Quarto provides an excellent way to combine code, visualizations, and narrative in a cohesive document. The website makes all visualizations and code accessible in one place.
-:::
-
-::: {.about-section}
 ## Acknowledgements
 
 - The #30DayChartChallenge community for inspiration and feedback
 - Various data providers and sources used throughout the challenge
 - Open source maintainers of the visualization libraries and tools
-:::
 
 ::: {.footer-content}
 Made with Quarto and GitHub Copilot
@@ -93,7 +85,6 @@ on a [Framework Laptop 13](https://frame.work/) running [Fedora KDE 42](https://
 .about-section {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
 }
 
 .about-section:last-child {

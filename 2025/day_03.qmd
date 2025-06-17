@@ -1,14 +1,9 @@
 ---
-title: "day_03 - 30DayChartChallenge"
+title: "Day 03: Circular"
 format:
   html:
     code-fold: true
-    toc: true
 ---
-
-# day 03
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -59,11 +54,11 @@ prepare_top_data <- function(data, column, top_n = 30) {
   top_data <- data[1:top_n]
   top_data[, id := 1:.N]
   top_data[, coa_iso := factor(coa_iso, levels = coa_iso)]
-  
+
   angle <- 90 - 360 * (top_data$id - 0.5) / nrow(top_data)
   top_data[, hjust := ifelse(angle < -90, 1, 0)]
   top_data[, angle := ifelse(angle < -90, angle + 180, angle)]
-  
+
   return(top_data)
 }
 
@@ -104,7 +99,7 @@ create_circular_plot <- function(data, y_column, fill_label, lab_f) {
     ) +
     scale_fill_paletteer_c(
       "scico::acton",
-       direction = -1, 
+       direction = -1,
        na.value = "lightgray",
        labels = lab_f,
        guide = guide_colorbar(
@@ -122,7 +117,7 @@ create_circular_plot <- function(data, y_column, fill_label, lab_f) {
 
 p1 <- create_circular_plot(top10_total, "total", "Number of IDPs", lab_f = scales::label_number(scale_cut = scales::cut_short_scale()))
 p2 <- create_circular_plot(top10_prop, "prop", "Proportion of IDPs", lab_f = scales::label_percent(accuracy = 1))
-  
+
 # Create final layout
 final_layout <- (p1 + p2) +
   plot_layout(widths = c(1, 1)) +
@@ -134,8 +129,8 @@ final_layout <- (p1 + p2) +
               <span style='font-size:14px; color:#9E9E9E;'>Data: IDMC displacement data extracted from UNHCR's 'refugees' package & Our World In Data | Plot: @gnoblet</span>",
     theme = theme(
       plot.title = element_textbox_simple(
-        family = "Nunito", 
-        size = 18, 
+        family = "Nunito",
+        size = 18,
         hjust = 0.5,
         halign = 0.5,
         # no margin below, even negative
@@ -152,7 +147,7 @@ create_annotation <- function(curve_x, curve_xend, curve_y, curve_yend,
     text_x, text_y, label, text_width = 30) {
       ggplot() +
         geom_curve(
-        aes(x = curve_x, xend = curve_xend, 
+        aes(x = curve_x, xend = curve_xend,
         y = curve_y, yend = curve_yend),
         curvature = -0.3,
         angle = 120,
@@ -207,5 +202,23 @@ ggsave(
 
 ## Final Plot
 
-![day_03 plot](day_03.png)
+![](day_03.png)
 
+## Notes
+
+This visualization presents the global displacement crisis through dual circular bar charts, comparing absolute numbers and proportional impact of internally displaced persons (IDPs) across countries.
+
+Data sources:
+- IDMC displacement data from the `refugees` R package
+- Population data from Our World in Data
+
+Tools used:
+
+- data.table (for efficient data manipulation)
+- ggplot2 (for creating the circular bar charts)
+- patchwork (for combining multiple plots)
+- ggtext (for rich text annotations)
+- showtext (for custom typography)
+- scico (for color palettes)
+
+The visualization uses polar coordinates to create circular bar charts that effectively display two different metrics: absolute numbers and proportion of population. This dual approach reveals important insights that a single metric would miss - countries with the highest absolute numbers of IDPs (like Sudan) may differ from those with the highest proportion of displaced population (like Palestine and Syria).

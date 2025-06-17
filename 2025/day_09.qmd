@@ -1,14 +1,9 @@
 ---
-title: "day_09 - 30DayChartChallenge"
+title: "Day 09: Diverging"
 format:
   html:
     code-fold: true
-    toc: true
 ---
-
-# day 09
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -102,8 +97,6 @@ g <- ggplot(dat_cty, aes(x = year, y = cantril_ladder_score, group = code)) +
     strip.text = element_text(color = text_col, size = 9)
   )
 
-g
-
 # save
 ggsave(
   "day_09.png",
@@ -115,5 +108,20 @@ ggsave(
 
 ## Final Plot
 
-![day_09 plot](day_09.png)
+![](day_09.png)
 
+## Notes
+
+This visualization displays self-reported life satisfaction scores across African countries using small multiples arranged in a geofacet grid that preserves the approximate geographic relationships between countries.
+
+Data source: Our World in Data on Self-Reported Life Satisfaction (Cantril Ladder scores)
+
+Tools used:
+
+- owidapi (for retrieving happiness data from Our World in Data)
+- geofacet (for creating the geographically arranged grid)
+- ggplot2 (for visualization)
+- ggtext (for rich text annotations)
+- showtext (for typography management)
+
+The visualization uses area charts to show trends in life satisfaction scores for each country from 2011 to 2020, with a dark blue reference line showing the average across all African nations. The aquamarine areas represent country-specific values on the 0-10 Cantril Ladder scale, where 0 represents the worst possible life and 10 the best possible life. This approach allows for easy comparison between countries while maintaining their geographic context.

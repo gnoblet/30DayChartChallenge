@@ -1,14 +1,10 @@
 ---
-title: "day_07 - 30DayChartChallenge"
+title: "Day 07: Outliers"
 format:
   html:
     code-fold: true
-    toc: true
 ---
 
-# day 07
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -163,5 +159,21 @@ ggsave(
 
 ## Final Plot
 
-![day_07 plot](day_07.png)
+![](day_07.png)
 
+## Notes
+
+This visualization compares ten different outlier detection methods applied to pollen density data, ranking them by the number of outliers identified.
+
+Data source: HistData::Pollen dataset (originally from David Coleman at RCA Laboratories)
+
+Tools used:
+
+- outliers (for Grubbs' test)
+- DMwR2 (for Local Outlier Factor)
+- solitude (for Isolation Forest)
+- EnvStats (for Rosner's test)
+- ggplot2 (for visualization)
+- ggtext (for rich text annotations)
+
+The visualization uses a small multiples approach with facets for each outlier detection method. Each panel shows the relationship between ridge and density measurements, with detected outliers highlighted in blue and a smoothed trend line fitted to the non-outlier points. This approach allows for visual comparison of how different statistical methods identify anomalies in the same dataset, revealing the variations in sensitivity and specificity across techniques.

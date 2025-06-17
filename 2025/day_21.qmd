@@ -1,14 +1,9 @@
 ---
-title: "day_21 - 30DayChartChallenge"
+title: "Day 21: Fossils"
 format:
   html:
     code-fold: true
-    toc: true
 ---
-
-# day 21
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -289,13 +284,13 @@ line_plot <- ggplot(yearly_long, aes(x = year, y = perc, color = energy_type)) +
 
 # old subtitle
 subtitle_text <- glue::glue(
-  "In the 1960s, only <span style='color:{energy_colors['Coal']};'><strong>coal</strong></span>, 
-    <span style='color:{energy_colors['Oil']};'><strong>oil</strong></span>, 
-    <span style='color:{energy_colors['Gas']};'><strong>gas</strong></span>, and 
-    <span style='color:{energy_colors['Hydro']};'><strong>hydro</strong></span> were part of the French primary energy consumption mix. By the 2020s, <span style='color:{energy_colors['Nuclear']};'><strong>nuclear</strong></span> energy became a player for almost 40%, and other sources appeared such as 
-    <span style='color:{energy_colors['Biofuel']};'><strong>biofuel</strong></span>, 
-    <span style='color:{energy_colors['Solar']};'><strong>solar</strong></span>, 
-    <span style='color:{energy_colors['Wind']};'><strong>wind</strong></span>, and 
+  "In the 1960s, only <span style='color:{energy_colors['Coal']};'><strong>coal</strong></span>,
+    <span style='color:{energy_colors['Oil']};'><strong>oil</strong></span>,
+    <span style='color:{energy_colors['Gas']};'><strong>gas</strong></span>, and
+    <span style='color:{energy_colors['Hydro']};'><strong>hydro</strong></span> were part of the French primary energy consumption mix. By the 2020s, <span style='color:{energy_colors['Nuclear']};'><strong>nuclear</strong></span> energy became a player for almost 40%, and other sources appeared such as
+    <span style='color:{energy_colors['Biofuel']};'><strong>biofuel</strong></span>,
+    <span style='color:{energy_colors['Solar']};'><strong>solar</strong></span>,
+    <span style='color:{energy_colors['Wind']};'><strong>wind</strong></span>, and
     <span style='color:{energy_colors['Other Renewables']};'><strong>other renewable energy</strong></span>. The French model for energy is singular. In 1973, nuclear power already accounted for 8% of the production of French electricity."
 )
 
@@ -560,5 +555,20 @@ ggsave(
 
 ## Final Plot
 
-![day_21 plot](day_21.png)
+![](day_21.png)
 
+## Notes
+
+This visualization presents France's primary energy consumption over 60 years (1960-2020) using multiple complementary chart types to highlight different aspects of the same data.
+
+Data source: Our World in Data - Energy Consumption
+
+Tools used:
+- data.table (for data manipulation)
+- ggplot2 (for base visualization framework)
+- waffle (for proportional squares visualization)
+- ggsankey (for flow diagrams)
+- patchwork (for combining multiple plots)
+- ggtext (for rich text annotations)
+
+The visualization combines four different panels to tell a complete story about energy consumption trends: a text panel explaining the context, a waffle chart showing proportional energy mix by decade, a line chart tracking the percentage contribution of each energy source over time, and an area chart displaying absolute consumption values. This multi-chart approach addresses the limitations of proportional visualizations by showing both relative and absolute changes simultaneously, highlighting how the French energy model's transition to nuclear power has evolved since the 1970s.

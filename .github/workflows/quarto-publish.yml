@@ -32,8 +32,7 @@ jobs:
       - name: Install R Dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages:
-            any::rmarkdown
+          packages: any::rmarkdown
             any::knitr
             any::ggplot2
             any::data.table
@@ -46,8 +45,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          cache: 'pip'
+          python-version: "3.10"
+          cache: "pip"
 
       - name: Install Python Dependencies
         run: |
@@ -66,7 +65,7 @@ jobs:
           path: .
 
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 

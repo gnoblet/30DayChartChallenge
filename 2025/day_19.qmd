@@ -1,8 +1,7 @@
 ---
-title: "Day 19 of 2025 #30DayChartChallenge"
-format:
-  html:
-    code-fold: true
+title: "Day 19: Smooth"
+format: html
+jupyter: python3
 ---
 
 This time, I'll plot the World Food Programme Prices data. First, we get data from the '''Global WFP Food Prices'' dataset from the HDX API. and remove the first row which contains tags.
@@ -18,8 +17,8 @@ import pandas as pd
 # setup
 setup_logging()
 Configuration.create(
-  hdx_site = "prod", 
-  user_agent="@gnoblet_30DayChartChallenge", 
+  hdx_site = "prod",
+  user_agent="@gnoblet_30DayChartChallenge",
   hdx_read_only = True)
 
 dataset = Dataset.read_from_hdx("global-wfp-food-prices")
@@ -63,7 +62,7 @@ df['unit_only'] = splits[1]
 # price as double
 df['price'] = df['price'].astype(float)
 
-# case_when 
+# case_when
 # if unit_only is KG, divide price by div
 # if unit_only is marmite, divide price by 2.5 (FAO: marmite is 2.5kg, seems to be in Haiti only, can be removed eventually since HTI is not XOF)
 df['price_kg'] = df.apply(lambda x: x['price'] / x['div'] if x['unit_only'] == 'KG' else x['price'] / 2.5, axis=1)
@@ -98,17 +97,21 @@ df['country_name'] = df['countryiso3'].map(iso)
 On to the plot! Using `seaborn` now we will plot time series of prices using small multiples by country. Let's load the packages needed and set up the theme.
 
 ```{python}
+# load libraries
 import seaborn as sns
 import matplotlib.dates as mdates
 import textwrap
 import matplotlib.pyplot as plt
 
-
 # set up a theme
 sns.set_theme(
-  style = 'whitegrid',
-  font = 'Carlito',
-  rc = {"grid.linewidth": 0.3})
+    style = 'whitegrid',
+    font = 'Carlito',
+    rc = {
+        "grid.linewidth": 0.3,
+        'figure.figsize':(9,6)
+    }
+)
 ```
 
 There are only seven countries in this dataset. I add dummy rows to be able to plot empty countries first that will leave space for the plot title on the basis of a 3-column row. There may very well be more elegant solutions but I couldn't find any.
@@ -129,17 +132,17 @@ df2 = pd.concat([dummy_rows, df], ignore_index=True)
 # plot each year's time series in its own facet
 g = sns.relplot(
     data = df2,
-    x = "date", 
-    y = "price_kg", 
-    col = "country_name", 
+    x = "date",
+    y = "price_kg",
+    col = "country_name",
     hue = "country_name",
     kind = "line",
-    palette = "Set2", 
-    linewidth = 4, 
+    palette = "Set2",
+    linewidth = 4,
     zorder = 5,
-    col_wrap = 3, 
-    height = 2, 
-    aspect = 1.5, 
+    col_wrap = 3,
+    height = 2,
+    aspect = 1.5,
     legend = False,
     col_order = ['cty1', 'cty2'] + sorted(df['country_name'].unique())
 )
@@ -152,13 +155,13 @@ for country_name, ax in g.axes_dict.items():
         # Your normal plotting code
         ax.text(.05, .93, country_name, transform = ax.transAxes)
         sns.lineplot(
-            data = df2[df2['country_name'] != country_name], 
-            x = "date", 
-            y = "price_kg", 
+            data = df2[df2['country_name'] != country_name],
+            x = "date",
+            y = "price_kg",
             units = "country_name",
             estimator = None,
-            color = "black", 
-            linewidth = 0.2, 
+            color = "black",
+            linewidth = 0.2,
             ax = ax
         )
 ```
@@ -188,24 +191,42 @@ Second, it's time to set titles, caption, etc.
 palette = sns.color_palette("Set2")
 title_color = palette[0]
 title = "How smooth are changes in local rice prices in Western Sub-Saharan Africa?"
-subtitle = "The graph displays median prices of local rice for 7 sub-sahar an countries from 2022 to today, where XOF is the main currency---coded as such in the dataset. The associated Quarto document emphasizes both how to download data from the HDX API and the use of small multiples to show the evolution of prices over time across countries."
+subtitle = "The graph displays median prices of local rice for 7 sub-saharan countries from 2022 to today, where XOF is the main currency."
 caption = "Data: HDX - WFP Food Prices | Viz: @gnoblet"
 # wrap characters and then add text
-title_w = "\n".join(textwrap.wrap(title, width = 50))
-subtitle_w = "\n".join(textwrap.wrap(subtitle, width = 70))
-plt.figtext(0.05, 0.9, title_w, fontsize = 23, color = title_color, wrap = True)
+title_w = "\n".join(textwrap.wrap(title, width = 35))
+subtitle_w = "\n".join(textwrap.wrap(subtitle, width = 50))
+plt.figtext(0.05, 0.9, title_w, fontsize = 20, color = title_color, wrap = True)
 plt.figtext(0.05, 0.75, subtitle_w, fontsize = 16, color = 'black', wrap = True)
 plt.figtext(0.05, 0.70, caption, fontsize = 12, color = 'black', wrap = True)
 
 ```
 
-Now, we eventually would like to save this plot.s
+Now, we eventually would like to save this plot.
 
 ```{python}
 # save plot
-plt.savefig('day_19.png', dpi = 600)
-
+g.figure.savefig('2025/day_19.png', dpi = 300, bbox_inches = 'tight')
+plt.show()
 # close plot
 plt.close()
 
 ```
+
+## Final Plot
+
+![](day_19.png)
+
+## Notes
+
+This visualization shows the evolution of local rice prices across seven West African countries that use XOF as their currency.
+
+Data source: World Food Programme Food Prices dataset (via Humanitarian Data Exchange API)
+
+Tools used:
+- hdx (for accessing the Humanitarian Data Exchange API)
+- pandas (for data manipulation)
+- seaborn (for visualization)
+- matplotlib (for plot customization)
+
+The visualization employs small multiples (faceted plots) to compare price trends across countries while maintaining context with faint background lines showing other countries' trends. The analysis addresses data quality issues by standardizing units (converting to price per kg) and calculating median prices by country and date to smooth inconsistencies in the original data.

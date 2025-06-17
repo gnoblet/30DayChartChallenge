@@ -7,7 +7,6 @@ toc: false
 <style>
 .category-row {
   margin-bottom: 3rem;
-  border-bottom: 1px solid #eee;
   padding-bottom: 2rem;
 }
 
@@ -138,33 +137,34 @@ toc: false
       <div class="day-number">01</div>
       <div class="day-title">Fractions</div>
     </a>
-    
+
     <!-- Day 02 -->
     <a href="2025/day_02.qmd" class="day-thumbnail">
       <img src="2025/day_02.png" alt="Day 02">
       <div class="day-number">02</div>
       <div class="day-title">Slope</div>
     </a>
-    
+
     <!-- Day 03 -->
     <a href="2025/day_03.qmd" class="day-thumbnail">
       <img src="2025/day_03.png" alt="Day 03">
       <div class="day-number">03</div>
       <div class="day-title">Circular</div>
     </a>
-    
+
     <!-- Day 04 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">04</div>
       <div class="day-title">Big or Small</div>
     </div>
-    
+
     <!-- Day 05 (Empty) -->
-    <div class="day-thumbnail empty-thumbnail">
+    <a href="2025/day_05.qmd" class="day-thumbnail">
+      <img src="2025/day_05.png" alt="Day 05">
       <div class="day-number">05</div>
       <div class="day-title">Ranking</div>
-    </div>
-    
+    </a>
+
     <!-- Day 06 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">06</div>
@@ -183,34 +183,34 @@ toc: false
       <div class="day-number">07</div>
       <div class="day-title">Outliers</div>
     </a>
-    
+
     <!-- Day 08 -->
     <a href="2025/day_08.qmd" class="day-thumbnail">
       <img src="2025/day_08.png" alt="Day 08">
       <div class="day-number">08</div>
       <div class="day-title">Histogram</div>
     </a>
-    
+
     <!-- Day 09 -->
     <a href="2025/day_09.qmd" class="day-thumbnail">
       <img src="2025/day_09.png" alt="Day 09">
       <div class="day-number">09</div>
       <div class="day-title">Diverging</div>
     </a>
-    
+
     <!-- Day 10 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">10</div>
       <div class="day-title">Multi-modal</div>
     </div>
-    
+
     <!-- Day 11 -->
     <a href="2025/day_11.qmd" class="day-thumbnail">
       <img src="2025/day_11.png" alt="Day 11">
       <div class="day-number">11</div>
       <div class="day-title">Stripes</div>
     </a>
-    
+
     <!-- Day 12 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">12</div>
@@ -228,33 +228,31 @@ toc: false
       <div class="day-number">13</div>
       <div class="day-title">Clusters</div>
     </div>
-    
+
     <!-- Day 14 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">14</div>
       <div class="day-title">Kinship</div>
     </div>
-    
+
     <!-- Day 15 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">15</div>
       <div class="day-title">Complicated</div>
     </div>
-    
+
     <!-- Day 16 -->
-    <a href="2025/day_16.qmd" class="day-thumbnail">
-      <img src="2025/day_16.png" alt="Day 16">
+    <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">16</div>
       <div class="day-title">Negative</div>
-    </a>
-    
+    </div>
+
     <!-- Day 17 -->
-    <a href="2025/day_17.qmd" class="day-thumbnail">
-      <img src="2025/day_17.png" alt="Day 17">
+    <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">17</div>
       <div class="day-title">Birds</div>
-    </a>
-    
+    </div>
+
     <!-- Day 18 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">18</div>
@@ -273,33 +271,32 @@ toc: false
       <div class="day-number">19</div>
       <div class="day-title">Smooth</div>
     </a>
-    
+
     <!-- Day 20 -->
-    <a href="2025/day_20.qmd" class="day-thumbnail">
-      <img src="2025/day_20.png" alt="Day 20">
+    <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">20</div>
       <div class="day-title">Urbanization</div>
-    </a>
-    
+    </div>
+
     <!-- Day 21 -->
     <a href="2025/day_21.qmd" class="day-thumbnail">
       <img src="2025/day_21.png" alt="Day 21">
       <div class="day-number">21</div>
       <div class="day-title">Fossils</div>
     </a>
-    
+
     <!-- Day 22 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">22</div>
       <div class="day-title">Stars</div>
     </div>
-    
+
     <!-- Day 23 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">23</div>
       <div class="day-title">Log Scale</div>
     </div>
-    
+
     <!-- Day 24 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">24</div>
@@ -317,31 +314,31 @@ toc: false
       <div class="day-number">25</div>
       <div class="day-title">Risk</div>
     </div>
-    
+
     <!-- Day 26 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">26</div>
       <div class="day-title">Monochrome</div>
     </div>
-    
+
     <!-- Day 27 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">27</div>
       <div class="day-title">Noise</div>
     </div>
-    
+
     <!-- Day 28 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">28</div>
       <div class="day-title">Inclusion</div>
     </div>
-    
+
     <!-- Day 29 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">29</div>
       <div class="day-title">Extraterrestrial</div>
     </div>
-    
+
     <!-- Day 30 (Empty) -->
     <div class="day-thumbnail empty-thumbnail">
       <div class="day-number">30</div>
