@@ -12,6 +12,8 @@ execute:
   message: false
 ---
 
+
+
 Let me start by emphasizing that this plot was heavily inspired by Muhammad Azhar's [waffle plot on the R Graph Gallery](https://r-graph-gallery.com/web-waffle-for-time-evolution.html). I found the dataset of yearly primary energy consumption for all countries on Our World in Data. What I'd like to do is to show the relative (proportional) change of the consumption of primary energy sources in France since 1960.
 
 ## Step 1: Load packages
@@ -21,6 +23,8 @@ I begin by loading the necessary packages for data manipulation and visualizatio
 ::: callout-tip
 Btw, usually I use `rig`, `renv`, and `box` to manage the versioning of R and R packages and for importing functions.
 :::
+
+
 
 ```{r}
 library(rio) # for importing data
@@ -32,6 +36,8 @@ library(ggtext) # to add text annotations
 library(patchwork) # to combine plots
 library(showtext) # to get fonts
 ```
+
+
 
 ## Step 2: Wrangle data
 
@@ -46,6 +52,8 @@ So, I import energy consumption data from Our World in Data and convert it into 
 ::: callout-tip
 To round years to the nearest decade, we can remove the modulo division of the year by 10, i.e., use the `%%` modulo operator dividing by 10, and it takes precedence over the `-` operator.
 :::
+
+
 
 ```{r}
 # import
@@ -68,6 +76,8 @@ dat_sum <- dat[
 ]
 ```
 
+
+
 Some final data wrangling is needed—or at least welcomed!
 
 -   transform the data to long format to facilitate plotting;
@@ -77,6 +87,8 @@ Some final data wrangling is needed—or at least welcomed!
 -   convert percentages to integers that add up to 100 per decade;
 
 -   add an 's' to 'decade' to avoid misleading readers.
+
+
 
 ```{r}
 # pivot longer
@@ -101,11 +113,15 @@ dat_sum <- dat_sum[, perc_int := as.integer(round(perc))][,
 dat_sum[, decade_chr := paste0(as.character(decade), "s")]
 ```
 
+
+
 ## Step 3: Time to plot
 
 The first questions I had thought about when I saw the data were: (1) if I were to display energy sources as fill colors, should I display all of them?, and (2) if yes, how to try out to represent these with colors that may represent the energy source for the reader (and myself as a reader).
 
 So I first did some research, aka I DuckDuckGo-ed [Petrol color](https://duckduckgo.com/?q=petrol+color&t=h_&iar=images) and [Nuclear Uranium color](https://duckduckgo.com/?q=nuclear+uranium+color&t=h_&iar=images). With a bit of back and forth and some trials and errors (and disagreement with the DuckDuckGo results)---e.g., when two colors for two energy sources were too close---, I got to the below colors, and then factored the energy sources data.
+
+
 
 ```{r}
 # legend of energy
@@ -142,7 +158,11 @@ dat_sum <- dat_sum[,
 setorder(dat_sum, decade, variable)
 ```
 
+
+
 Onto the waffle chart. The base plot is a simple waffle chart with facets per decade and a fill colors per energy source. Since I want the waffle chart to somewhat be a time series chart, I use only one row with a strip text at the bottom for the facets, and 5 blocks/squares per row (hence the y-scale must be modified).
+
+
 
 ```{r}
 g <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
@@ -172,7 +192,11 @@ g <- ggplot(dat_sum, aes(fill = variable, values = perc_int)) +
 g
 ```
 
+
+
 Next, let's refine the layout by adding some titles, and font and theming options. For the subtitle, I add color-coded references to the energy sources, so it serves as a legend (maybe a legend would still be needed though?).
+
+
 
 ```{r}
 #| fig-width: 9
@@ -250,7 +274,11 @@ g <- g +
 g
 ```
 
+
+
 To wrap up this plot, let's add one annotation to stress out the singular French context on nuclear energy and this surging proportion. I add here the arrow as a `geom_curve` onto the 1970s facet and then add the text with `geom_richtext` over the whole plot using `patchwork`. Other options are possible ofc (and most likely more efficient ones).
+
+
 
 ```{r}
 g <- g +
@@ -291,3 +319,4 @@ g <- g + inset_element(
 )
 g
 ```
+

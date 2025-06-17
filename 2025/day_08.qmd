@@ -1,14 +1,10 @@
 ---
-title: "day_08 - 30DayChartChallenge"
+title: "Day 08: Histogram"
 format:
   html:
     code-fold: true
-    toc: true
 ---
 
-# day 08
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -27,7 +23,7 @@ Q3 <- quantile(downloads$count, 0.75)
 IQR <- Q3 - Q1
 lower_bound <- Q1 - 1.5 * IQR
 upper_bound <- Q3 + 1.5 * IQR
-downloads <- downloads |> 
+downloads <- downloads |>
   dplyr::filter(count >= lower_bound & count <= upper_bound)
 
 ggplot(downloads, aes(count)) +
@@ -36,7 +32,7 @@ ggplot(downloads, aes(count)) +
   scale_y_continuous(
     name = "Density",
     sec.axis = sec_axis(
-      trans = ~ . * nrow(downloads) * 10, 
+      trans = ~ . * nrow(downloads) * 10,
       name = "Counts"
     )
   ) +
@@ -52,7 +48,7 @@ ggplot(downloads, aes(count)) +
   theme(
     plot.background = element_rect(fill = "#F5F5DC"),
     panel.grid.major = element_blank(),
-    panel.background = element_rect(fill = "#F5F5DC"), 
+    panel.background = element_rect(fill = "#F5F5DC"),
     panel.border = element_rect(color = "#8B4513", linewidth = 2, fill = NA),
     plot.title = element_text(hjust = 0.5, family = "Old English Text MT", size = 24, color = "#8B4513"),
     plot.subtitle = element_text(hjust = 0.5, family = "Old English Text MT", size = 18, color = "#8B4513"),
@@ -68,5 +64,19 @@ ggsave("day_08.png", width = 8, height = 6, dpi = 300)
 
 ## Final Plot
 
-![day_08 plot](day_08.png)
+![](day_08.png)
 
+## Notes
+
+This visualization creates a histogram with overlaid density curve showing the weekly download counts for the HistData package from CRAN. The design incorporates a playful historical aesthetic to match the "hist" in both histogram and the HistData package name.
+
+Data source: CRAN package download statistics (via cranlogs package)
+
+Tools used:
+
+- cranlogs (for retrieving CRAN download statistics)
+- dplyr (for data manipulation)
+- ggplot2 (for visualization)
+- extrafont (for historical typography)
+
+The visualization removes outliers using the 1.5 × IQR method to focus on the typical download patterns. The historical manuscript aesthetic is achieved through careful color selection (parchment background, brown ink text) and the use of Old English Text font family, creating a visual pun on the "hist" theme.

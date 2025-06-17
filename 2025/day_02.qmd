@@ -1,14 +1,10 @@
 ---
-title: "day_02 - 30DayChartChallenge"
+title: "Day 02: Slope"
 format:
   html:
     code-fold: true
     toc: true
 ---
-
-# day 02
-
-This document contains the R code for creating the plot for this day's challenge.
 
 ```{r}
 #| label: setup
@@ -28,8 +24,8 @@ dat <- refugees::population
 setDT(dat)
 
 # sum total number of refugees per year
-dat_sum_year <- dat[, 
-  lapply(.SD, function(x) sum(x, na.rm = TRUE)), 
+dat_sum_year <- dat[,
+  lapply(.SD, function(x) sum(x, na.rm = TRUE)),
   .SDcols = c("refugees", "asylum_seekers", "returned_refugees", "idps", "returned_idps", "stateless"),
   by = .(year)]
 
@@ -59,15 +55,15 @@ cat <- c(
 dat_sum_year_long[, pop_type := factor(pop_type, levels = names(cat), labels = cat)]
 
 # plot
- g <- ggplot(dat_sum_year_long[pop_type != "Total"], 
+ g <- ggplot(dat_sum_year_long[pop_type != "Total"],
        aes(x = year, y = n, group = pop_type, color = pop_type)) +
   geom_line(size = 1) +
-  gghighlight(pop_type %in% c("Refugees", "IDPs"), 
+  gghighlight(pop_type %in% c("Refugees", "IDPs"),
               use_direct_label = TRUE,
               unhighlighted_params = list(color = "gray60", size = 0.2)) +
   theme_dark(base_size = 14) +
   scale_color_manual(values = c(
-    "Refugees" = "#00B4D8", 
+    "Refugees" = "#00B4D8",
     "IDPs" = "#FF3D7F"
   )) +
   scale_y_continuous(
@@ -118,7 +114,7 @@ dat_sum_year_long[, pop_type := factor(pop_type, levels = names(cat), labels = c
     y = NULL
   ) +
   theme(
-    plot.title = element_text(color = "#FF6F61", size = 18, hjust = 0, 
+    plot.title = element_text(color = "#FF6F61", size = 18, hjust = 0,
                               margin = margin(b = 20, l = -50)),
     plot.title.position = "plot",
     panel.background = element_rect(fill = "gray10"),
@@ -137,14 +133,12 @@ dat_sum_year_long[, pop_type := factor(pop_type, levels = names(cat), labels = c
       Internally Displaced Persons (IDPs) have been forced to flee their homes due to conflict, violence, persecution or disasters, remaining within their own country while refugees cross broders.<br><br>
       <span style='color:#FF3D7F'>IDPs</span> numbers show consistent growth since the mid-1990s. <span style='color:#00B4D8'>Refugees</span> figures exhibit periodic surges and a constant increase since the early-2000s.</i><br><br>
       Data collection and standardization efforts through reforms have improved displacement tracking.</span>",
-    box.color = NA, 
-    fill = NA,   
-    width = grid::unit(0.5, "npc"), 
+    box.color = NA,
+    fill = NA,
+    width = grid::unit(0.5, "npc"),
     lineheight = 1.4,
     hjust = 0, vjust = 1
-  ) 
-
-g 
+  )
 
 # save
 ggsave(
@@ -158,5 +152,20 @@ ggsave(
 
 ## Final Plot
 
-![day_02 plot](day_02.png)
+![](day_02.png)
 
+## Notes
+
+This visualization tracks global displacement trends from 1951 to 2024, focusing on refugees and internally displaced persons (IDPs). The dark theme emphasizes the serious nature of the subject matter.
+
+Data source: UNHCR Refugee Data Finder (accessed via the `refugees` R package)
+
+Tools used:
+
+- refugees (for displacement data)
+- data.table (for data manipulation)
+- ggplot2 (for base visualization)
+- gghighlight (for emphasizing key displacement categories)
+- ggtext (for rich text annotations)
+
+The visualization highlights significant policy moments with vertical markers (2005 reform and 2016 Grand Bargain) and uses contrasting colors to distinguish between IDPs (pink) and refugees (blue). The chart reveals the concerning upward trend in both refugee and IDP numbers over recent decades, with IDPs consistently outpacing refugee numbers since the mid-1990s.
