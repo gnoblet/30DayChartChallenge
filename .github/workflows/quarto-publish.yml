@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: "pages"
@@ -50,6 +51,7 @@ jobs:
             libsodium-dev \
             libmagick++-dev \
             libicu-dev \
+            libudunits2-dev
             libudunits2-dev \
             libglpk-dev \
             libglpk40 \
@@ -98,3 +100,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        with:
+          artifact_name: github-pages
