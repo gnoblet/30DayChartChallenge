@@ -51,7 +51,6 @@ jobs:
             libsodium-dev \
             libmagick++-dev \
             libicu-dev \
-            libudunits2-dev
             libudunits2-dev \
             libglpk-dev \
             libglpk40 \
