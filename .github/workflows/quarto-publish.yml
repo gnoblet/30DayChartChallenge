@@ -29,18 +29,10 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install R Dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Restore R dependencies from renv.lock
+        uses: r-lib/actions/setup-renv@v2
         with:
-          packages: any::rmarkdown
-            any::knitr
-            any::ggplot2
-            any::data.table
-            any::sf
-            any::patchwork
-            any::ggtext
-            any::waffle
-            any::forcats
+          cache-version: 1
 
       - name: Setup Python
         uses: actions/setup-python@v4
