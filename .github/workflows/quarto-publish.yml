@@ -53,10 +53,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt || pip install matplotlib seaborn pandas numpy plotly
 
-      - name: Install Quarto
-        run: |
-          sudo apt-get update
-          sudo apt-get install --allow-downgrades quarto=1.6.43
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: latest
+          tinytex: false
 
       - name: Render Quarto Project
         uses: quarto-dev/quarto-actions/render@v2
