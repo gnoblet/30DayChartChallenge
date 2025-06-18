@@ -206,7 +206,7 @@ Now, we eventually would like to save this plot.
 
 ```{python}
 # save plot
-g.figure.savefig('2025/day_19.png', dpi = 300, bbox_inches = 'tight')
+g.figure.savefig('day_19.png', dpi = 300, bbox_inches = 'tight')
 plt.show()
 # close plot
 plt.close()
