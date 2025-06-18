@@ -178,7 +178,7 @@ ggsave(
 
 ## Final Plot
 
-!](day_11.png)
+![](day_11.png)
 
 ## Notes
 

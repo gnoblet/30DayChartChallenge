@@ -238,6 +238,7 @@ This visualization uses a Sankey bump chart to track maize production for the to
 Data source: [Our World in Data - Agricultural Production](https://ourworldindata.org/)
 
 Tools used:
+
 - owidapi (for data retrieval from Our World in Data)
 - data.table (for efficient data manipulation)
 - ggsankey (for creating the Sankey bump chart)
