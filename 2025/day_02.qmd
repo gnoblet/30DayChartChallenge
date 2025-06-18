@@ -3,7 +3,6 @@ title: "Day 02: Slope"
 format:
   html:
     code-fold: true
-    toc: true
 ---
 
 ```{r}

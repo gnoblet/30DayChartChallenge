@@ -10,7 +10,7 @@ The charts are published as a [Quarto website](https://quarto.org/) using GitHub
 
 ## Structure
 - `2025/`: Contains the individual Quarto documents for each day's chart
-- `data/`: Contains datasets used for the visualizations (not included in the git repository)
+- `data/`: Contains datasets used for the visualizations if needed (not included in the git repository)
 - `images/`: Contains static images and resources
 - `.github/workflows/`: Contains the GitHub Actions workflow for automatic deployment
 
