@@ -50,7 +50,10 @@ jobs:
             libsodium-dev \
             libmagick++-dev \
             libicu-dev \
-            libudunits2-dev
+            libudunits2-dev \
+            libglpk-dev \
+            libglpk40 \
+            zlib1g-dev
 
       - name: Restore R dependencies from renv.lock
         uses: r-lib/actions/setup-renv@v2
