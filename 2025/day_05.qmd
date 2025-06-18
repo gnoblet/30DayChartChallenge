@@ -20,7 +20,6 @@ library(paletteer)    # for color palettes
 library(scales)       # for axis formatting
 library(dplyr)        # for rowwise not imported by ggsankey
 library(gghighlight)  # for highlighting certain countries
-library(shadowtext)   # for text grob
 library(showtext)     # for fonts
 library(ggsankey)     # for Sankey diagram
 
@@ -132,7 +131,7 @@ dat_labels <- dat_top10[year == max(year)][
 ][, `:=`(
   total_production = sum(tonnes),
   cumulative_tonnes = cumsum(tonnes),
-  band_index = .I  
+  band_index = .I
 )][, `:=`(
   # Reverse by subtracting from total
   label_y = cumulative_tonnes - (tonnes / 2) + (band_index - 1) * space,
